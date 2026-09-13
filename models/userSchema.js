@@ -32,7 +32,7 @@ const userSchema = new Schema({
     status:{
         type: String,
         enum: ['active','deactive'],
-        default: 'active'
+        default: 'deactive'
     },
 
     isVerified: {

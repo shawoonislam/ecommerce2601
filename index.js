@@ -3,7 +3,10 @@ require('dotenv').config()
 const express = require('express');
 const app = express()
 const authRouter = require('./routes/authrouter')
-const mongodbConfig = require('./config/mongoDBConfig')
+const userRouter = require('./routes/userrouter')
+const adminRouter = require('./routes/adminrouter')
+const mongodbConfig = require('./config/mongoDBConfig');
+const { adminMiddleware, vendorMiddleware, userMiddleware } = require('./middlewares/roleMiddleware');
 
 
 app.use(express.json())
@@ -11,6 +14,8 @@ mongodbConfig()
 
 
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/user',userMiddleware, userRouter)
+app.use('/api/v1/admin',adminMiddleware, adminRouter)
 
 const port = process.env.PORT || 5000
 app.listen(port, ()=>{

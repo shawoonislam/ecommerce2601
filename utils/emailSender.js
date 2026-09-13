@@ -26,4 +26,20 @@ async function verificationEmail(email,token){
     }
 }
 
-module.exports = {verificationEmail}
+async function forgotPasswordEmail(email,token){
+    try {
+    const info = await transporter.sendMail({
+        from: 'shawon.cit.bd@gmail.com', 
+        to: email, 
+        subject: "Reset Password", 
+        html: `<b>For Reseting Password <a href="http://localhost:5173/resetpassword/${token}">Click Here</a></b>`, 
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    } catch (err) {
+    console.error("Error while sending mail:", err);
+    }
+}
+
+module.exports = {verificationEmail,forgotPasswordEmail}

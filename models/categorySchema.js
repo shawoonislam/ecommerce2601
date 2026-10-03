@@ -12,6 +12,10 @@ const categorySchema = new Schema({
     type: String,
     enum: ['active','deactive','reject'],
     default: 'deactive'
+  },
+  owner:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
   }
 
 })

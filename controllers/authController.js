@@ -1,7 +1,8 @@
 const User = require('../models/userSchema')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const {verificationEmail, forgotPasswordEmail} = require('../utils/emailSender')
+const {verificationEmail, forgotPasswordEmail} = require('../utils/emailSender');
+const { findById, findOne } = require('../models/categorySchema');
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -67,6 +68,7 @@ let registrationController = async (req,res)=>{
         message: 'Registration Done'
     })
 }
+
 
 let loginController = async (req,res) => {
     let {email,password} = req.body
@@ -140,6 +142,8 @@ let verifyEmailController = async (req,res) =>{
 
 }
 
+
+
 let forgotPassword = async (req,res)=>{
     let {email} = req.body
 
@@ -168,6 +172,7 @@ let forgotPassword = async (req,res)=>{
 
 }
 
+
 let resetPassword = async (req,res) => {
     let {token} = req.params
     let {newPassword, confirmPassword} =  req.body
@@ -194,6 +199,9 @@ let resetPassword = async (req,res) => {
     
 
 }
+
+
+
 
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTlkNGVkNTY2NGE3ZjkxOTk0MGUxYjEiLCJlbWFpbCI6InNoYXdvbi5jaXQuYmRAZ21haWwuY29tIiwiaWF0IjoxNzg5MjA4MzcwLCJleHAiOjE3ODk0Njc1NzB9.wmg7tsn_Num5ypLBvSEC_Bvw6T9On5H_2OHIJxH-y9w

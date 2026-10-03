@@ -28,7 +28,10 @@ let createCategory = async (req,res)=>{
 }
 
 let getAllCategory = async (req,res)=>{
-    let category = await Cat.find({}).populate('owner')
+    let category = await Cat.find({}).populate({
+        path: 'owner',
+        select: '-password'
+    })
 
     res.status(200).json({
         success: true,
@@ -53,6 +56,8 @@ let createSubCategory = async (req,res) =>{
         name: name.toLowerCase(),
         parentCategory: parentCategory
     })
+
+    let catUpdate = await Cat.findByIdAndUpdate({_id:parentCategory},{$push:{subCategory:subCat._id}})
 
     await subCat.save()
 
@@ -86,19 +91,26 @@ let getAllCategoryWiseSubCategory = async (req,res)=>{
 
 let getAllOwnerWiseCategory =  async (req,res) => {
     let {id} = req.params
+    
+    let data = await Cat.find({owner: id}).populate('subCategory')
+    // let cat = []
 
-    let data = await Cat.find({owner: id})
 
-    data.map(async (item)=>{
-        console.log(item._id)
-        let tintinatin = await SubCat.find({parentCategory: '6ab8fadcfab85481ddf3fa81'})
-        console.log(tintinatin)
-    })
-    //  res.status(200).json({
-    //     success: true,
-    //     message: "All Category",
-    //     data: data
+    // data.map( async (item)=>{
+    //     let tintinatin = await SubCat.find({parentCategory: item._id})
+    //     cat.push({
+    //         ...item,
+    //         subcategory: tintinatin
+    //     })
     // })
+    // console.log("cat",cat)
+
+
+     res.status(200).json({
+        success: true,
+        message: "All Category",
+        data: data
+    })
 }
 
 module.exports = {createCategory,getAllCategory,createSubCategory,getAllSubCategory,getAllCategoryWiseSubCategory,getAllOwnerWiseCategory}

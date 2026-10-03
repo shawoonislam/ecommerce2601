@@ -16,7 +16,13 @@ const categorySchema = new Schema({
   owner:{
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-  }
+  },
+  subCategory:[
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'SubCategory',
+    }
+  ]
 
 })
 

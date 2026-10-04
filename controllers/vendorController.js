@@ -89,28 +89,55 @@ let getAllCategoryWiseSubCategory = async (req,res)=>{
     })
 }
 
+
 let getAllOwnerWiseCategory =  async (req,res) => {
     let {id} = req.params
     
-    let data = await Cat.find({owner: id}).populate('subCategory')
-    // let cat = []
+    // let data = await Cat.find({owner: id}).populate('subCategory')
+
+    // promise start
+    let data = await Cat.find({owner: id}).lean()
+
+    
+    const mypromise = new Promise(function(resolve, reject) {
+        let cat = []
+        data.map( async (item)=>{
+            try {
+                let tintinatin = await SubCat.find({parentCategory: item._id})
+                cat.push({
+                    ...item,
+                    subcategory: tintinatin
+                })
+                if(data.length == cat.length){
+                    resolve(cat)
+                }
+            } catch (error) {
+                    reject(error)
+            }
+            
+        })
+    });
 
 
-    // data.map( async (item)=>{
-    //     let tintinatin = await SubCat.find({parentCategory: item._id})
-    //     cat.push({
-    //         ...item,
-    //         subcategory: tintinatin
-    //     })
-    // })
-    // console.log("cat",cat)
-
-
-     res.status(200).json({
-        success: true,
-        message: "All Category",
-        data: data
+    mypromise.then(value => {
+        res.status(200).json({
+            success: true,
+            message: "All Category",
+            data: value
+        })
     })
+   
+   
+
+    
+    // promise end
+
+
+    //  res.status(200).json({
+    //     success: true,
+    //     message: "All Category",
+    //     data: data
+    // })
 }
 
 module.exports = {createCategory,getAllCategory,createSubCategory,getAllSubCategory,getAllCategoryWiseSubCategory,getAllOwnerWiseCategory}

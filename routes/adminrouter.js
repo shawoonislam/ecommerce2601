@@ -8,5 +8,4 @@ _.get('/active/user',activeUser)
 _.get('/deactive/user',deActiveUser)
 _.post('/update/user/:id',updateUser)
 
-
 module.exports = _

@@ -1,4 +1,49 @@
 let Product = require("../models/productSchema")
+const { readSheet } = require('read-excel-file/node') 
+const readXlsxFile = require('read-excel-file/node')
+
+const schema = {
+  title: {
+    column: 'title',
+    type: String
+  },
+  description: {
+    column: 'description',
+    type: String
+  },
+  shortDescription: {
+    column: 'shortDescription',
+    type: String
+  },
+  price: {
+    column: 'price',
+    type: Number
+  },
+  discountPrice: {
+    column: 'discountPrice',
+    type: Number
+  },
+  stock: {
+    column: 'stock',
+    type: Number
+  },
+  status: {
+    column: 'status',
+    type: String
+  },
+  images: {
+    column: 'images.url',
+    type: String
+  },
+  sku: {
+    column: 'sku',
+    type: String
+  },
+  slug: {
+    column: 'slug',
+    type: String
+  }
+}
 
 let createProduct = async (req,res) =>{
     let {title, description, shortDescription, brand, price, discountPrice, category, subCategory,isMain,owner} = req.body
@@ -69,6 +114,36 @@ let getAllProduct = async (req,res) =>{
 
 }
 
+let bulkProductUploadController = async (req,res) => {
+    console.log("hello", req.file)
+    const { objects, errors } = await readSheet(req.file.path, { schema })
 
 
-module.exports = { createProduct,getAllProduct }
+    let products = []
+
+    objects.map((product,index) => {
+        products.push({
+        ...product,
+        slug: product.slug ? product.slug : product.title.toLowerCase().split(" ").join("-"),
+        sku: product.sku ? product.sku : `eco-${product.title.substring(0, 4)}-${Date.now()}`,
+        images: [
+            {
+                url: product.images,
+                isMain: false
+            }
+        ]
+    })
+    })
+
+    await Product.insertMany(products)
+
+    res.status(201).json({
+        success: true,
+        message: "All product upload done"
+    })
+
+}
+
+
+
+module.exports = { createProduct,getAllProduct,bulkProductUploadController }

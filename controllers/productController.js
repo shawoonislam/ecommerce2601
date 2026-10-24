@@ -102,6 +102,8 @@ let createProduct = async (req,res) =>{
 
 }
 
+
+// need to update
 let getAllProduct = async (req,res) =>{
     let product = await Product.find({}).populate(['category', 'subCategory' , 'owner'])
 
@@ -144,6 +146,41 @@ let bulkProductUploadController = async (req,res) => {
 
 }
 
+let updateProductController = async (req,res) => {
+    let {id} = req.params
+
+    let existingProduct = await Product.findOne({_id: id})
+
+    if(req.body.isMain){
+      existingProduct.images.map((item,index)=>{
+          item.isMain = false
+      })
+      existingProduct.images[req.body.isMain].isMain = true
+      
+    }
+
+    if(req.body.deleteImage){
+     
+      if(existingProduct.images[req.body.deleteImage].isMain ==  true){
+        existingProduct.images[0].isMain = true
+        
+      }
+      existingProduct.images.splice(req.body.deleteImage, 1);
+    }
+    
+    existingProduct.save()
+
+    
+
+    // let data = await Product.findByIdAndUpdate({_id: id},req.body,{new: true})
+
+    res.status(200).json({
+      success: true,
+      message: "Update Done"
+    })
+
+}
 
 
-module.exports = { createProduct,getAllProduct,bulkProductUploadController }
+
+module.exports = { createProduct,getAllProduct,bulkProductUploadController,updateProductController }

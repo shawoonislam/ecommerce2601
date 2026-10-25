@@ -29,7 +29,7 @@ _.get('/all/user/:id/category',getAllOwnerWiseCategory)
 // product
 _.post('/create/product', upload.array('photo') ,createProduct)
 _.post('/bulk/product', upload.single('file') ,bulkProductUploadController)
-_.post('/single/product/upload/:id', upload.single('photo') ,updateProductController)
+_.post('/single/product/upload/:id', upload.array('photo') ,updateProductController)
 _.get('/all/product',getAllProduct)
 
 

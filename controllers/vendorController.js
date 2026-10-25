@@ -140,4 +140,6 @@ let getAllOwnerWiseCategory =  async (req,res) => {
     // })
 }
 
+
+
 module.exports = {createCategory,getAllCategory,createSubCategory,getAllSubCategory,getAllCategoryWiseSubCategory,getAllOwnerWiseCategory}

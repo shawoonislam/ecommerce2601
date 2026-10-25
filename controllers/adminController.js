@@ -1,4 +1,5 @@
 let User = require('../models/userSchema')
+let Category = require('../models/categorySchema')
 
 let allUserController = async (req,res)=>{
     let users = await User.find({}).select('-password')
@@ -66,7 +67,22 @@ let updateUser = async (req,res)=>{
 }
 
 
+let activeDeactiveCategory = async (req,res) => {
+    let {id} = req.params
+
+    let {status} = req.body
+
+    await Category.findByIdAndUpdate({_id:id},{status: status},{new: true})
+
+    res.status(200).json({
+        success: true,
+        message: "Updated"
+    })
+
+}
 
 
 
-module.exports = {allUserController,singleUser,activeUser,deActiveUser,updateUser}
+
+
+module.exports = {allUserController,singleUser,activeUser,deActiveUser,updateUser,activeDeactiveCategory}

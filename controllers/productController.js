@@ -149,7 +149,28 @@ let bulkProductUploadController = async (req,res) => {
 let updateProductController = async (req,res) => {
     let {id} = req.params
 
+    if(req.body.slug || req.body.sku){
+      return res.status(400).json({
+        success: false,
+        message: "You can not change sku or slug"
+      })
+    }
+
+
     let existingProduct = await Product.findOne({_id: id})
+
+    
+    let images = [...existingProduct.images]
+  
+     req.files.map((item, index) => {
+        images.push({
+            url: item.path,
+            isMain: false
+        })
+    })
+
+    existingProduct.images = images
+
 
     if(req.body.isMain){
       existingProduct.images.map((item,index)=>{
@@ -159,11 +180,10 @@ let updateProductController = async (req,res) => {
       
     }
 
+    // Delete multiple images HW
     if(req.body.deleteImage){
-     
       if(existingProduct.images[req.body.deleteImage].isMain ==  true){
         existingProduct.images[0].isMain = true
-        
       }
       existingProduct.images.splice(req.body.deleteImage, 1);
     }
@@ -172,7 +192,7 @@ let updateProductController = async (req,res) => {
 
     
 
-    // let data = await Product.findByIdAndUpdate({_id: id},req.body,{new: true})
+    let data = await Product.findByIdAndUpdate({_id: id},req.body,{new: true})
 
     res.status(200).json({
       success: true,

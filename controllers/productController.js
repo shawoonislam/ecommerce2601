@@ -116,6 +116,21 @@ let getAllProduct = async (req,res) =>{
 
 }
 
+let getSingleProduct = async (req,res) =>{
+
+  let {slug} =req.params
+
+    let product = await Product.findOne({slug: slug}).populate(['category', 'subCategory' , 'owner'])
+
+    res.status(200).json({
+        success: true,
+        message: "Single Products",
+        product: product
+    })
+
+
+}
+
 let bulkProductUploadController = async (req,res) => {
     console.log("hello", req.file)
     const { objects, errors } = await readSheet(req.file.path, { schema })
@@ -203,4 +218,10 @@ let updateProductController = async (req,res) => {
 
 
 
-module.exports = { createProduct,getAllProduct,bulkProductUploadController,updateProductController }
+// todo: multiple image delete
+
+
+
+
+
+module.exports = { createProduct,getAllProduct,bulkProductUploadController,updateProductController,getSingleProduct }

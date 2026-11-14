@@ -46,10 +46,29 @@ const schema = {
 }
 
 let createProduct = async (req,res) =>{
-    let {title, description, shortDescription, brand, price, discountPrice, category, subCategory,isMain,owner} = req.body
+    let {title, description, shortDescription, brand, price,discountType, discountPrice, category, subCategory,isMain,owner,stock} = req.body
+
+    if(discountType && discountPrice){
+      if(discountType == 'percent'){
+        let afterDiscount = (price * discountPrice) / 100
+        if(afterDiscount >= price){
+          return res.status(400).json({
+            success: false,
+            message: "Invalid Discount"
+          })
+        }
+      }else{
+        if(discountPrice >= price){
+          return res.status(400).json({
+            success: false,
+            message: "Invalid Discount"
+          })
+        }
+      }
+    }
 
    let images = []
-    req.files.map((item, index) => {
+    req.files?.map((item, index) => {
         images.push({
             url: item.path,
             isMain: index == isMain ? true : false
@@ -83,13 +102,15 @@ let createProduct = async (req,res) =>{
         description: description,
         shortDescription: shortDescription,
         price: price,
+        discountType:discountType,
         discountPrice: discountPrice,
         category: category,
         subCategory: subCategory,
         slug: slug,
         sku: sku,
         images: images,
-        owner: owner
+        owner: owner,
+        stock: stock
     })
 
     product.save()

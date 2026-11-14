@@ -1,6 +1,56 @@
 let axios = require('axios')
+let Cart = require('../models/cartSchema')
+let Coupon = require('../models/couponSchema')
 
 let paymentController = async (req,res) => {
+
+  let{desc,cus_name,cus_email,cus_add1,cus_add2,cus_city,cus_state,cus_postcode,cus_phone,owner,coupon} = req.body
+
+  
+  let findCart = await Cart.find({owner: owner}).populate('productId')
+
+
+  let total = 0
+
+  findCart.map((item)=>{
+    if(item.productId.discountType == 'percent'){
+        let afterDiscount = ((item.productId.price * item.productId.discountPrice) / 100) * item.quantity
+        total += afterDiscount
+
+      }else{
+        let afterDiscount = (item.productId.price - item.productId.discountPrice) * item.quantity
+        total += afterDiscount
+      }
+  })
+
+    console.log(total)
+
+  if(coupon){
+    let existingCoupon = await Coupon.findOne({code: coupon})
+    if(total < existingCoupon.minimumAmount){
+      return res.status(400).json({
+        success: false,
+        message: "Please add more amount"
+      })
+    }
+
+    
+
+    if(existingCoupon.couponType == 'percent'){
+        let afterDiscount = (total * existingCoupon.couponAmount) / 100
+        total = +total - afterDiscount
+
+      }else{
+        let afterDiscount = item.productId.price - existingCoupon.couponAmount
+        total = +total - afterDiscount
+      }
+  }
+
+
+
+
+
+
     try {
     const paymentData = {
       store_id: "aamarpaytest",
@@ -8,19 +58,19 @@ let paymentController = async (req,res) => {
       success_url: "http://www.merchantdomain.com/successpage.html",
       fail_url: "http://www.merchantdomain.com/failedpage.html",
       cancel_url: "http://www.merchantdomain.com/cancelpage.html",
-      amount: "10.0",
+      amount: total,
       currency: "BDT",
       signature_key: "dbb74894e82415a2f7ff0ec3a97e4183",
-      desc: "Merchant Registration Payment",
-      cus_name: "Name",
-      cus_email: "payer@merchantcustomer.com",
-      cus_add1: "House B-158 Road 22",
-      cus_add2: "Mohakhali DOHS",
-      cus_city: "Dhaka",
-      cus_state: "Dhaka",
-      cus_postcode: "1206",
+      desc: desc,
+      cus_name: cus_name,
+      cus_email: cus_email,
+      cus_add1: cus_add1,
+      cus_add2: cus_add2,
+      cus_city: cus_city,
+      cus_state: cus_state,
+      cus_postcode: cus_postcode,
       cus_country: "Bangladesh",
-      cus_phone: "+8801704",
+      cus_phone: cus_phone,
       type: "json",
     };
 

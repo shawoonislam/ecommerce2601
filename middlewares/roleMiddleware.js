@@ -25,7 +25,7 @@ let vendorMiddleware = (req,res,next) =>{
 
    var decoded = jwt.verify(token, process.env.JWT_VERIFY_SECRET);
 
-   if(decoded.role != 'vendor'){
+   if(decoded.role != 'vendor' || decoded.role != 'admin'){
         return res.status(401).json({
             success: false,
             message: " You are not authorized"

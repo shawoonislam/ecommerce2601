@@ -2,6 +2,7 @@ let axios = require('axios')
 let Cart = require('../models/cartSchema')
 let Coupon = require('../models/couponSchema')
 let Order = require('../models/orderSchema')
+let Product = require('../models/productSchema')
 
 let paymentController = async (req,res) => {
 
@@ -135,10 +136,35 @@ let paymentVerify = async (req,res) => {
 
 }
 
+let reOrder = async (req,res) => {
+  let {orderId} = req.body
 
-// todo => coupon / faild hole abar payment kora / review comment / multiple image delete
+  
+  let orderData = await Order.findOne({_id: orderId})
+  orderData.products.map(async (item)=>{
+      let existingProduct = await Product.findOne({_id:item.productId._id })
+      if(existingProduct.stock  >= item.quantity){
+        let existingCart = await Cart.findOne({productId: item.productId._id, owner: item.owner})
+        if(existingCart){
+          existingCart.quantity = existingCart.quantity + item.quantity
+          existingCart.save()
+        }else{
+          let litonvariable = new Cart({
+            productId:item.productId._id,
+            quantity:item.quantity,
+            owner:item.owner
+          })
+          litonvariable.save()
+        }
+      }
+  })
+
+}
+
+
+// todo =>  faild hole abar payment kora / review comment / multiple image delete
 
 
 
 
-module.exports = {paymentController,paymentVerify}
+module.exports = {paymentController,paymentVerify,reOrder}

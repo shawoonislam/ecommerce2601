@@ -111,7 +111,11 @@ let getCart = async (req,res) => {
 
     let carts = await Cart.find({owner}).populate('productId')
 
-    console.log(carts)
+    res.status(200).json({
+        success: true,
+        message: "All Cart",
+        cart:carts
+    })
 
 
 }

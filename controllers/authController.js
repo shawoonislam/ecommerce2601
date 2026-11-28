@@ -6,6 +6,9 @@ const { findById, findOne } = require('../models/categorySchema');
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
+
+
+
 let registrationController = async (req,res)=>{
     let {fullName, email, password, confirmPassword, terms} = req.body
 

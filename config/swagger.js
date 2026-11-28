@@ -11,7 +11,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:5000',
+                url: process.env.ENVIRONMENT == "development" ? "http://localhost:5000/" : "https://ecommerce2601.onrender.com/",
                 description: 'Development server',
             },
         ],

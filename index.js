@@ -44,6 +44,7 @@ const authRouter = require('./routes/authrouter');
 const userRouter = require('./routes/userrouter');
 const adminRouter = require('./routes/adminrouter');
 const vendorRouter = require('./routes/vendorRouter');
+const cors = require('cors')
 
 const mongodbConfig = require('./config/mongoDBConfig');
 
@@ -56,6 +57,7 @@ const {
 } = require('./middlewares/roleMiddleware');
 
 app.use(express.json());
+app.use(cors())
 
 // Database connection
 mongodbConfig();

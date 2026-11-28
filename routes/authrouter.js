@@ -1,5 +1,5 @@
 const express = require('express');
-const { registrationController,loginController,verifyEmailController, forgotPassword, resetPassword } = require('../controllers/authController');
+const { registrationController,loginController,verifyEmailController, forgotPassword, resetPassword, resendVerificationEmail } = require('../controllers/authController');
 const _ = express.Router();
 
 
@@ -75,5 +75,6 @@ _.post('/login',loginController)
 _.post('/verify/:token',verifyEmailController)
 _.post('/forgot-password',forgotPassword)
 _.post('/reset-password/:token',resetPassword)
+_.post('/resend/verify/:email',resendVerificationEmail)
 
 module.exports = _

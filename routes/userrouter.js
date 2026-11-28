@@ -1,7 +1,7 @@
 const express = require('express');
 const { userController } = require('../controllers/userController');
 const _ = express.Router();
-const { getAllProduct,getSingleProduct } = require('../controllers/productController');
+const { getAllProduct,getSingleProduct, ratingController } = require('../controllers/productController');
 const {  getAllCategory,getAllSubCategory,getAllCategoryWiseSubCategory,getAllOwnerWiseCategory } = require('../controllers/vendorController');
 const { createCart, increDecre,getCart } = require('../controllers/cartController');
 const { paymentController, paymentVerify, reOrder } = require('../controllers/paymentController');
@@ -27,6 +27,8 @@ _.get('/get/cart', getCart)
 _.post('/payment',paymentController)
 _.post('/reorder',reOrder)
 _.get('/payment/verify/:id/:owner',paymentVerify)
+
+_.post('/rating',ratingController)
 
 
 

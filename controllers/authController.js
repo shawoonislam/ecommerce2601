@@ -203,11 +203,40 @@ let resetPassword = async (req,res) => {
 
 }
 
+let resendVerificationEmail = async (req,res) => {
+    let {email} = req.params
+
+    let existingUser = await User.findOne({email:email})
+
+    if(!existingUser){
+        return res.status(400).json({
+            success:false,
+            message:"Email not found"
+        })
+    }
+
+     let verificationToken = jwt.sign({
+        _id: existingUser._id,
+        email: existingUser.email,
+        role: existingUser.role
+    },process.env.JWT_VERIFY_SECRET,{
+        expiresIn: '7d'
+    })
+
+    verificationEmail(email,verificationToken)
+
+    res.status(200).json({
+        success: true,
+        message: "check your email"
+    })
+
+}
 
 
 
 
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2YTlkNGVkNTY2NGE3ZjkxOTk0MGUxYjEiLCJlbWFpbCI6InNoYXdvbi5jaXQuYmRAZ21haWwuY29tIiwiaWF0IjoxNzg5MjA4MzcwLCJleHAiOjE3ODk0Njc1NzB9.wmg7tsn_Num5ypLBvSEC_Bvw6T9On5H_2OHIJxH-y9w
 
 
-module.exports = {registrationController,loginController,verifyEmailController,forgotPassword,resetPassword}
+
+
+module.exports = {registrationController,loginController,verifyEmailController,forgotPassword,resetPassword,resendVerificationEmail}

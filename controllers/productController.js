@@ -237,6 +237,13 @@ let updateProductController = async (req,res) => {
 
 }
 
+let ratingController = async (req,res) => {
+  let {user,productId,rating} = req.body
+
+  
+
+}
+
 
 
 // todo: multiple image delete
@@ -245,4 +252,4 @@ let updateProductController = async (req,res) => {
 
 
 
-module.exports = { createProduct,getAllProduct,bulkProductUploadController,updateProductController,getSingleProduct }
+module.exports = { createProduct,getAllProduct,bulkProductUploadController,updateProductController,getSingleProduct,ratingController }
